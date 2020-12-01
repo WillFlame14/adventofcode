@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitThis": true,
+    "target": "ESNext"
+  },
+  "include": ["./src/*"],
+}
