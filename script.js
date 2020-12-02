@@ -4,18 +4,20 @@ const start = 1606798800;			// Time when the first puzzle was released
 const current_day = Math.floor((Date.now() / 1000 - 1606798800) / 86400) + 1;		// The current day number
 
 const colours = [
-	'rgba(205, 99, 132, 1)',
-	'rgba(54, 162, 185, 1)',
+	'rgba(225, 129, 92, 1)',
+	'rgba(80, 80, 60, 1)',
 	'rgba(155, 156, 86, 1)',
 	'rgba(55, 122, 182, 1)',
 	'rgba(173, 92, 205, 1)',
 	'rgba(205, 159, 64, 1)',
-	'rgba(165, 149, 132, 1)',
-	'rgba(94, 112, 165, 1)',
+	'rgba(54, 172, 195, 1)',
+	'rgba(185, 48, 21, 1)',
 	'rgba(65, 149, 132, 1)',
 	'rgba(0, 50, 85, 1)',
-	'rgba(85, 120, 93, 1)',
-	'rgba(145, 90, 13, 1)',
+	'rgba(65, 160, 23, 1)',
+	'rgba(115, 69, 142, 1)',
+	'rgba(94, 112, 165, 1)',
+	'rgba(45, 55, 74, 1)'
 ];
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
