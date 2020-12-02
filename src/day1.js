@@ -4,7 +4,7 @@ const fs = require('fs');
 
 // Naive solution since the alternative is way too much thinking
 function main() {
-	const parts = fs.readFileSync('./input/day1.txt').toString().split('\r\n');
+	const parts = fs.readFileSync('./input.txt').toString().split('\r\n');
 
 	const numbers = [];
 
