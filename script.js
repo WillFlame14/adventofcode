@@ -1,6 +1,7 @@
 'use strict';
 
-const start = 1606798800;		// Time when the first puzzle was released
+const start = 1606798800;			// Time when the first puzzle was released
+const current_day = Math.floor((Date.now() / 1000 - 1606798800) / 86400) + 1;		// The current day number
 
 const colours = [
 	'rgba(205, 99, 132, 1)',
@@ -34,6 +35,10 @@ function updateCharts() {
 	}
 }
 
+const anon_users = {
+	'991271': 'Tiger64guy'
+};
+
 function generate(data) {
 	// Global settings for all charts
 	window.Chart.defaults.global.defaultFontColor = 'black';
@@ -49,46 +54,65 @@ function generate(data) {
 		const timestamps = [];
 		const elapsed = [];
 
-		Object.keys(member_data.completion_day_level).forEach((day, index) => {
-			const day_timestamps = member_data.completion_day_level[index + 1];
+		Object.keys(member_data.completion_day_level).forEach(day => {
+			const day_timestamps = member_data.completion_day_level[day];
 
-			const first_star = ((day_timestamps[1].get_star_ts - (start + index * 86400)) / 60).toFixed(2);
-			const second_star = ((day_timestamps[2].get_star_ts - (start + index * 86400)) / 60).toFixed(2);
+			const first_star = ((day_timestamps[1].get_star_ts - (start + (day - 1) * 86400)) / 60).toFixed(2);
+			timestamps[(day - 1) * 2] = first_star;
 
-			timestamps.push(first_star);
-			timestamps.push(second_star);
+			if(day_timestamps[2] !== undefined) {
+				const second_star = ((day_timestamps[2].get_star_ts - (start + (day - 1) * 86400)) / 60).toFixed(2);
 
-			elapsed.push((second_star - first_star).toFixed(2));
+				timestamps[(day - 1) * 2 + 1] = second_star;
+				elapsed[day - 1] = (second_star - first_star).toFixed(2);
+			}
 		});
-		map.set(member_data.name || 'Tiger64guy', { id, timestamps, elapsed });
+
+		map.set(member_data.name || anon_users[id] || `user #${id}`, { id, timestamps, elapsed });
 	});
 
-	const timestamp_datasets = [];
-	const elapsed_datasets = [];
+	const datasets = {};
 
+	// For each member...
 	Array.from(map.keys()).forEach((member, index) => {
-		const base_dataset = {
-			label: member,
-			backgroundColor: ['rgba(0, 0, 0, 0)'],
-			borderColor: [colours[index], colours[index]],
-			pointBackgroundColor: [colours[index], colours[index]],
-			pointBorderWidth: 3,
-			borderWidth: 2
-		};
+		// Get all their datasets and add them to the compiled set
+		Object.keys(map.get(member)).forEach(dataset => {
+			const values = map.get(member)[dataset];
 
-		timestamp_datasets.push(Object.assign({ data: map.get(member).timestamps }, base_dataset));
-		elapsed_datasets.push(Object.assign({ data: map.get(member).elapsed }, base_dataset));
+			if(datasets[dataset] === undefined) {
+				datasets[dataset] = [];
+			}
+
+			datasets[dataset].push({
+				label: member,
+				data: values,
+				lineTension: 0,
+				backgroundColor: ['rgba(0, 0, 0, 0)'],
+				borderColor: new Array(values.length).fill(colours[index]),
+				pointBackgroundColor: new Array(values.length).fill(colours[index]),
+				pointBorderWidth: 3,
+				borderWidth: 2
+			});
+		});
 	});
 
-	console.log(timestamp_datasets);
-	console.log(elapsed_datasets);
+	const labels = {
+		'timestamps': [],
+		'elapsed': []
+	};
+
+	for(let i = 1; i <= current_day; i++) {
+		labels['timestamps'].push(`${i}.1`);
+		labels['timestamps'].push(`${i}.2`);
+		labels['elapsed'].push(`${i}`);
+	}
 
 	// Timestamp chart
 	new window.Chart(document.getElementById('timestampChart').getContext('2d'), {
 		type: 'line',
 		data: {
-			labels: ['1.1', '1.2', '2.1', '2.2'],
-			datasets: timestamp_datasets
+			labels: labels['timestamps'],
+			datasets: datasets['timestamps']
 		},
 		options: {
 			responsive: false,
@@ -136,8 +160,8 @@ function generate(data) {
 	new window.Chart(document.getElementById('elapsedChart').getContext('2d'), {
 		type: 'line',
 		data: {
-			labels: ['1', '2'],
-			datasets: elapsed_datasets
+			labels: labels['elapsed'],
+			datasets: datasets['elapsed']
 		},
 		options: {
 			responsive: false,
