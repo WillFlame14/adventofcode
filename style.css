@@ -1,9 +1,13 @@
 html {
   margin: 0px;
   padding: 0px;
-  font-size: 1.5vw;
+  font-size: 1.4vw;
   font-family: "Source Code Pro", sans-serif;
   background-color: #eeeeee;
+}
+
+canvas {
+	margin-bottom: 30px;
 }
 
 #jsonParseError {

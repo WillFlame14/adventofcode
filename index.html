@@ -11,13 +11,15 @@
 		<div>
 			<form>
 				<label>Paste JSON in here to generate charts:</label>
-				<input id="jsonInput" type="text">
+				<input id="jsonInput" autocomplete="off" type="text">
 				<button onclick="updateCharts(event)">Submit</button>
 				<div id="jsonParseError"></div>
 			</form>
 		<div id="charts">
-			<canvas id="timestampChart" width="800" height="500"></canvas>
+			<canvas id="timestampChart1" width="800" height="500"></canvas>
+			<canvas id="timestampChart2" width="800" height="500"></canvas>
 			<canvas id="elapsedChart" width="800" height="500"></canvas>
+			<canvas id="pointsChart" width="800" height="500"></canvas>
 		</div>
 	</main>
 	<script src="script.js"></script>

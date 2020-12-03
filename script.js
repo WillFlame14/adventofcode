@@ -34,6 +34,7 @@ function updateCharts() {
 	catch(err) {
 		document.getElementById('jsonParseError').style.display = 'block';
 		document.getElementById('jsonParseError').innerHTML = err;
+		throw err;
 	}
 }
 
@@ -50,8 +51,12 @@ function generate(data) {
 	// Map of user --> some of their data
 	const map = new Map();
 
+	// Puzzle --> List of objects containing a user and their time for that puzzle
+	const day_times = [...new Array(current_day * 2)].map(() => []);
+
 	Object.keys(data.members).forEach(id => {
 		const member_data = data.members[id];
+		const name = member_data.name || anon_users[id] || `user #${id}`;
 
 		const timestamps = [];
 		const elapsed = [];
@@ -61,16 +66,49 @@ function generate(data) {
 
 			const first_star = ((day_timestamps[1].get_star_ts - (start + (day - 1) * 86400)) / 60).toFixed(2);
 			timestamps[(day - 1) * 2] = first_star;
+			day_times[(day - 1) * 2].push({ name, time: first_star });
 
 			if(day_timestamps[2] !== undefined) {
 				const second_star = ((day_timestamps[2].get_star_ts - (start + (day - 1) * 86400)) / 60).toFixed(2);
 
 				timestamps[(day - 1) * 2 + 1] = second_star;
+				day_times[(day - 1) * 2 + 1].push({ name, time: second_star });
 				elapsed[day - 1] = (second_star - first_star).toFixed(2);
 			}
 		});
 
-		map.set(member_data.name || anon_users[id] || `user #${id}`, { id, timestamps, elapsed });
+		map.set(name, { id, timestamps, elapsed, points: [0] });
+	});
+
+	const num_users = Object.keys(data.members).length;
+
+	day_times.forEach((puzzle_times, puzzle_index) => {
+		// Ignore day 1
+		if(puzzle_index < 2) {
+			return;
+		}
+
+		// Sort the times for each star
+		puzzle_times.sort((a, b) => {
+			return a.time - b.time;
+		});
+
+		const solved_users = new Set();
+
+		puzzle_times.forEach((score, index) => {
+			const { points } = map.get(score.name);
+			points.push(points[points.length - 1] + (num_users - index));
+
+			solved_users.add(score.name);
+		});
+
+		Array.from(map.keys()).forEach(name => {
+			// User did not solve this puzzle
+			if(!solved_users.has(name)) {
+				const { points } = map.get(name);
+				points.push(points[points.length - 1]);
+			}
+		});
 	});
 
 	const datasets = {};
@@ -100,17 +138,23 @@ function generate(data) {
 
 	const labels = {
 		'timestamps': [],
-		'elapsed': []
+		'elapsed': [],
+		'points': ['0']
 	};
 
 	for(let i = 1; i <= current_day; i++) {
 		labels['timestamps'].push(`${i}.1`);
 		labels['timestamps'].push(`${i}.2`);
 		labels['elapsed'].push(`${i}`);
+
+		if(i !== 1) {
+			labels['points'].push(`${i}.1`);
+			labels['points'].push(`${i}.2`);
+		}
 	}
 
-	// Timestamp chart
-	new window.Chart(document.getElementById('timestampChart').getContext('2d'), {
+	// Timestamp chart(1h)
+	new window.Chart(document.getElementById('timestampChart1').getContext('2d'), {
 		type: 'line',
 		data: {
 			labels: labels['timestamps'],
@@ -123,22 +167,17 @@ function generate(data) {
 					type: 'logarithmic',
 					scaleLabel: {
 						display: 'true',
-						labelString: 'Time (minutes)'
+						labelString: 'Time'
 					},
 					ticks: {
-						min: 5, //minimum tick
-						max: 1440, //maximum tick
-						callback: function (value, index, values) {
-							return Number(value.toString());//pass tick values as a string into Number function
+						min: 0,
+						max: 60,
+						callback: function (value, index, _values) {
+							return ['0', '5m', '10m', '30m', '1h'][index];
 						}
 					},
-					afterBuildTicks: function (chartObj) { //Build ticks labelling as per your need
-						chartObj.ticks = [];
-						// chartObj.ticks.push(0.1);
-						chartObj.ticks.push(4);
-						chartObj.ticks.push(10);
-						chartObj.ticks.push(100);
-						chartObj.ticks.push(1000);
+					afterBuildTicks: function (chartObj) {
+						chartObj.ticks = [0, 5, 10, 30, 60];
 					}
 				}],
 				xAxes: [{
@@ -153,7 +192,51 @@ function generate(data) {
 			},
 			title: {
 				display: true,
-				text: 'Solve Time'
+				text: 'Solve Time (first hour)'
+			}
+		}
+	});
+
+	// Timestamp chart (24h)
+	new window.Chart(document.getElementById('timestampChart2').getContext('2d'), {
+		type: 'line',
+		data: {
+			labels: labels['timestamps'],
+			datasets: datasets['timestamps']
+		},
+		options: {
+			responsive: false,
+			scales: {
+				yAxes: [{
+					type: 'logarithmic',
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Time'
+					},
+					ticks: {
+						min: 0,
+						max: 1440,
+						callback: function (value, index, _values) {
+							return ['0', '5m', '10m', '30m', '1h', '4h', '12h', '24h'][index];
+						}
+					},
+					afterBuildTicks: function (chartObj) {
+						chartObj.ticks = [0, 5, 10, 30, 60, 240, 720, 1440];
+					}
+				}],
+				xAxes: [{
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Day'
+					}
+				}]
+			},
+			legend: {
+				position: 'right'
+			},
+			title: {
+				display: true,
+				text: 'Solve Time (first day)'
 			}
 		}
 	});
@@ -169,9 +252,20 @@ function generate(data) {
 			responsive: false,
 			scales: {
 				yAxes: [{
+					type: 'logarithmic',
 					scaleLabel: {
 						display: 'true',
-						labelString: 'Time (minutes)'
+						labelString: 'Time'
+					},
+					ticks: {
+						min: 0,
+						max: 60,
+						callback: function (value, index, _values) {
+							return ['0', '30s', '1m', '5m', '10m', '30m', '1h'][index];
+						}
+					},
+					afterBuildTicks: function (chartObj) {
+						chartObj.ticks = [0, 0.5, 1, 5, 10, 30, 60];
 					}
 				}],
 				xAxes: [{
@@ -187,6 +281,39 @@ function generate(data) {
 			title: {
 				display: true,
 				text: 'Time Elapsed Between Parts 1 and 2'
+			}
+		}
+	});
+
+	// Points chart
+	new window.Chart(document.getElementById('pointsChart').getContext('2d'), {
+		type: 'line',
+		data: {
+			labels: labels['points'],
+			datasets: datasets['points']
+		},
+		options: {
+			responsive: false,
+			scales: {
+				yAxes: [{
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Points'
+					}
+				}],
+				xAxes: [{
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Day'
+					}
+				}]
+			},
+			legend: {
+				position: 'right'
+			},
+			title: {
+				display: true,
+				text: 'Leaderboard Score'
 			}
 		}
 	});
