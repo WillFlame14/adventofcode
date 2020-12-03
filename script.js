@@ -127,7 +127,7 @@ function generate(data) {
 					},
 					ticks: {
 						min: 5, //minimum tick
-						max: 1000, //maximum tick
+						max: 1440, //maximum tick
 						callback: function (value, index, values) {
 							return Number(value.toString());//pass tick values as a string into Number function
 						}
@@ -135,7 +135,7 @@ function generate(data) {
 					afterBuildTicks: function (chartObj) { //Build ticks labelling as per your need
 						chartObj.ticks = [];
 						// chartObj.ticks.push(0.1);
-						chartObj.ticks.push(5);
+						chartObj.ticks.push(4);
 						chartObj.ticks.push(10);
 						chartObj.ticks.push(100);
 						chartObj.ticks.push(1000);
