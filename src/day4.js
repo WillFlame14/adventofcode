@@ -2,6 +2,10 @@
 
 const fs = require('fs');
 
+// NOTE: Since validity of a new passport is only checked when there is an empty newline,
+// 		 the input must have at least one empty newline at the end or the program will
+// 		 not check the last passport correctly. (can be easily added yourself)
+
 function main() {
 	const lines = fs.readFileSync('input.txt').toString().split('\r\n');
 
