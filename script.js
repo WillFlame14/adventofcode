@@ -60,6 +60,7 @@ function generate(data) {
 
 		const timestamps = [];
 		const elapsed = [];
+		const stars = [];
 
 		Object.keys(member_data.completion_day_level).forEach(day => {
 			const day_timestamps = member_data.completion_day_level[day];
@@ -67,17 +68,19 @@ function generate(data) {
 			const first_star = ((day_timestamps[1].get_star_ts - (start + (day - 1) * 86400)) / 60).toFixed(2);
 			timestamps[(day - 1) * 2] = first_star;
 			day_times[(day - 1) * 2].push({ name, time: first_star });
+			stars.push({ x: day_timestamps[1].get_star_ts * 1000 });
 
 			if(day_timestamps[2] !== undefined) {
 				const second_star = ((day_timestamps[2].get_star_ts - (start + (day - 1) * 86400)) / 60).toFixed(2);
 
 				timestamps[(day - 1) * 2 + 1] = second_star;
 				day_times[(day - 1) * 2 + 1].push({ name, time: second_star });
+				stars.push({ x: day_timestamps[2].get_star_ts * 1000 });
 				elapsed[day - 1] = (second_star - first_star).toFixed(2);
 			}
 		});
 
-		map.set(name, { id, timestamps, elapsed, points: [0] });
+		map.set(name, { id, timestamps, elapsed, points: [0], stars });
 	});
 
 	const num_users = Object.keys(data.members).length;
@@ -89,9 +92,7 @@ function generate(data) {
 		}
 
 		// Sort the times for each star
-		puzzle_times.sort((a, b) => {
-			return a.time - b.time;
-		});
+		puzzle_times.sort((a, b) => a.time - b.time);
 
 		const solved_users = new Set();
 
@@ -123,6 +124,14 @@ function generate(data) {
 				datasets[dataset] = [];
 			}
 
+			// Generate the stars data properly
+			if(dataset === 'stars') {
+				values.sort((a, b) => a.x - b.x);
+				values.forEach((point, index2) => {
+					point.y = index2 + 1;
+				});
+			}
+
 			datasets[dataset].push({
 				label: member,
 				data: values,
@@ -137,15 +146,17 @@ function generate(data) {
 	});
 
 	const labels = {
-		'timestamps': [],
-		'elapsed': [],
-		'points': ['0']
+		timestamps: [],
+		elapsed: [],
+		points: ['0'],
+		stars: [start * 1000]
 	};
 
 	for(let i = 1; i <= current_day; i++) {
 		labels['timestamps'].push(`${i}.1`);
 		labels['timestamps'].push(`${i}.2`);
 		labels['elapsed'].push(`${i}`);
+		labels['stars'].push((start + (i * 86400)) * 1000);
 
 		if(i !== 1) {
 			labels['points'].push(`${i}.1`);
@@ -314,6 +325,43 @@ function generate(data) {
 			title: {
 				display: true,
 				text: 'Leaderboard Score'
+			}
+		}
+	});
+
+	// Stars chart
+	new window.Chart(document.getElementById('starsChart').getContext('2d'), {
+		type: 'line',
+		data: {
+			labels: labels['stars'],
+			datasets: datasets['stars']
+		},
+		options: {
+			responsive: false,
+			scales: {
+				yAxes: [{
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Points'
+					}
+				}],
+				xAxes: [{
+					type: 'time',
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Time'
+					},
+					time: {
+						unit: 'day'
+					}
+				}]
+			},
+			legend: {
+				position: 'right'
+			},
+			title: {
+				display: true,
+				text: 'Stars Earned'
 			}
 		}
 	});
