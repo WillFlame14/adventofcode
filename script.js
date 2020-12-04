@@ -1,7 +1,7 @@
 'use strict';
 
 const start = 1606798800;			// Time when the first puzzle was released
-const current_day = Math.floor((Date.now() / 1000 - 1606798800) / 86400) + 1;		// The current day number
+const current_day = Math.floor((Date.now() / 1000 - start) / 86400) + 1;		// The current day number
 
 const colours = [
 	'rgba(225, 129, 92, 1)',
@@ -52,7 +52,7 @@ function generate(data) {
 	const map = new Map();
 
 	// Puzzle --> List of objects containing a user and their time for that puzzle
-	const day_times = [...new Array(current_day * 2)].map(() => []);
+	const day_times = [...new Array(current_day * 2 + 2)].map(() => []);
 
 	Object.keys(data.members).forEach(id => {
 		const member_data = data.members[id];
@@ -259,13 +259,13 @@ function generate(data) {
 					},
 					ticks: {
 						min: 0,
-						max: 60,
+						max: 240,
 						callback: function (value, index, _values) {
-							return ['0', '30s', '1m', '5m', '10m', '30m', '1h'][index];
+							return ['0', '30s', '1m', '5m', '10m', '30m', '1h', '4h'][index];
 						}
 					},
 					afterBuildTicks: function (chartObj) {
-						chartObj.ticks = [0, 0.5, 1, 5, 10, 30, 60];
+						chartObj.ticks = [0, 0.5, 1, 5, 10, 30, 60, 240];
 					}
 				}],
 				xAxes: [{
