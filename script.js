@@ -182,13 +182,13 @@ function generate(data) {
 					},
 					ticks: {
 						min: 0,
-						max: 60,
+						max: 120,
 						callback: function (value, index, _values) {
-							return ['0', '5m', '10m', '30m', '1h'][index];
+							return ['0', '5m', '10m', '30m', '1h', '2h'][index];
 						}
 					},
 					afterBuildTicks: function (chartObj) {
-						chartObj.ticks = [0, 5, 10, 30, 60];
+						chartObj.ticks = [0, 5, 10, 30, 60, 120];
 					}
 				}],
 				xAxes: [{
@@ -203,7 +203,7 @@ function generate(data) {
 			},
 			title: {
 				display: true,
-				text: 'Solve Time (first hour)'
+				text: 'Solve Time (first 2 hours)'
 			}
 		}
 	});
