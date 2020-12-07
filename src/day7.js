@@ -41,12 +41,12 @@ function main() {
 	}
 
 	// Part 1
-	findHeldBy('shiny gold', heldBy);
+	findHeldBy('shiny gold');
 	console.log(visited.size);
 
 	// Part 2
-	// For some reason there's 1 extra bag counted... not sure why.
-	return findHolds('shiny gold', holds) - 1;
+	// Subtract 1 since the shiny gold bag itself doesn't count
+	return findHolds('shiny gold') - 1;
 }
 
 function findHeldBy(colour) {
