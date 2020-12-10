@@ -4,20 +4,26 @@ const start = 1606798800;			// Time when the first puzzle was released
 const current_day = Math.floor((Date.now() / 1000 - start) / 86400) + 1;		// The current day number
 
 const colours = [
-	'rgba(225, 129, 92, 1)',
-	'rgba(80, 80, 60, 1)',
-	'rgba(155, 156, 86, 1)',
-	'rgba(55, 122, 182, 1)',
-	'rgba(173, 92, 205, 1)',
-	'rgba(205, 159, 64, 1)',
-	'rgba(54, 172, 195, 1)',
-	'rgba(185, 48, 21, 1)',
-	'rgba(65, 149, 132, 1)',
-	'rgba(0, 50, 85, 1)',
-	'rgba(65, 160, 23, 1)',
-	'rgba(115, 69, 142, 1)',
-	'rgba(94, 112, 165, 1)',
-	'rgba(45, 55, 74, 1)'
+	'rgba(255, 179, 0, 1)',
+	'rgba(128, 62, 117, 1)',
+	'rgba(255, 104, 0, 1)',
+	'rgba(126, 149, 175, 1)',
+	'rgba(193, 10, 12, 1)',
+	'rgba(206, 162, 98, 1)',
+	'rgba(129, 112, 102, 1)',
+	'rgba(0, 125, 52, 1)',
+	'rgba(246, 118, 142, 1)',
+	'rgba(0, 83, 138, 1)',
+	'rgba(15, 42, 22, 1)',
+	'rgba(83, 55, 122, 1)',
+	'rgba(45, 92, 200, 1)',
+	'rgba(179, 40, 81, 1)',
+	'rgba(40, 200, 100, 1)',
+	'rgba(87, 24, 13, 1)',
+	'rgba(147, 170, 0, 1)',
+	'rgba(89, 51, 21, 1)',
+	'rgba(241, 58, 19, 1)',
+	'rgba(45, 14, 22, 1)'
 ];
 
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -52,7 +58,8 @@ function generate(data) {
 	const map = new Map();
 
 	// Puzzle --> List of objects containing a user and their time for that puzzle
-	const day_times = [...new Array(current_day * 2 + 2)].map(() => []);
+	const day_times = [...new Array(current_day * 2)].map(() => []);
+	const day_elapsed = [...new Array(current_day)].map(() => []);
 
 	Object.keys(data.members).forEach(id => {
 		const member_data = data.members[id];
@@ -60,7 +67,7 @@ function generate(data) {
 
 		const timestamps = [];
 		const elapsed = [];
-		const stars = [];
+		const stars = [{ x: start * 1000 }];
 
 		Object.keys(member_data.completion_day_level).forEach(day => {
 			const day_timestamps = member_data.completion_day_level[day];
@@ -77,6 +84,7 @@ function generate(data) {
 				day_times[(day - 1) * 2 + 1].push({ name, time: second_star });
 				stars.push({ x: day_timestamps[2].get_star_ts * 1000 });
 				elapsed[day - 1] = (second_star - first_star).toFixed(2);
+				day_elapsed[day - 1].push(second_star - first_star);
 			}
 		});
 
@@ -84,7 +92,9 @@ function generate(data) {
 	});
 
 	const num_users = Object.keys(data.members).length;
+	const median_elapsed = [];
 
+	// Calculate scores
 	day_times.forEach((puzzle_times, puzzle_index) => {
 		// Ignore day 1
 		if(puzzle_index < 2) {
@@ -112,6 +122,20 @@ function generate(data) {
 		});
 	});
 
+	// Calculate median for elapsed times
+	day_elapsed.forEach((elapsed_times, puzzle_index) => {
+		// Sort the times for each star
+		elapsed_times.sort((a, b) => a - b);
+
+		const middle = elapsed_times.length / 2;
+		if(elapsed_times.length % 2 === 0) {
+			median_elapsed[puzzle_index] = ((Number(elapsed_times[middle - 1]) + Number(elapsed_times[middle])) / 2).toFixed(2);
+		}
+		else {
+			median_elapsed[puzzle_index] = elapsed_times[Math.floor(middle)].toFixed(2);
+		}
+	});
+
 	const datasets = {};
 
 	// For each member...
@@ -128,11 +152,11 @@ function generate(data) {
 			if(dataset === 'stars') {
 				values.sort((a, b) => a.x - b.x);
 				values.forEach((point, index2) => {
-					point.y = index2 + 1;
+					point.y = index2;
 				});
 			}
 
-			datasets[dataset].push({
+			const series = {
 				label: member,
 				data: values,
 				lineTension: 0,
@@ -140,11 +164,30 @@ function generate(data) {
 				borderColor: new Array(values.length).fill(colours[index]),
 				pointBackgroundColor: new Array(values.length).fill(colours[index]),
 				pointBorderWidth: 3,
-				borderWidth: 2
-			});
+				borderWidth: 2,
+			};
+
+			if(dataset === 'elapsed') {
+				series.showLine = false;
+			}
+
+			datasets[dataset].push(series);
 		});
 	});
 
+	// Add median dataset
+	datasets['elapsed'].push({
+		label: 'median',
+		data: median_elapsed,
+		lineTension: 0,
+		backgroundColor: ['rgba(0, 0, 0, 0)'],
+		borderColor: new Array(median_elapsed.length).fill('rgba(0, 0, 0, 1)'),
+		pointBackgroundColor: new Array(median_elapsed.length).fill('rgba(0, 0, 0, 1)'),
+		pointBorderWidth: 3,
+		borderWidth: 2
+	});
+
+	// Generate labels for the graphs
 	const labels = {
 		timestamps: [],
 		elapsed: [],
@@ -164,12 +207,12 @@ function generate(data) {
 		}
 	}
 
-	// Timestamp chart(1h)
+	// Timestamp chart(2h)
 	new window.Chart(document.getElementById('timestampChart1').getContext('2d'), {
 		type: 'line',
 		data: {
-			labels: labels['timestamps'],
-			datasets: datasets['timestamps']
+			labels: labels['timestamps'].slice(Math.max(0, labels['timestamps'].length - 10)),
+			datasets: datasets['timestamps'].map(dataset => Object.assign({}, dataset, { data: dataset.data.slice(current_day * 2 - 10) }))
 		},
 		options: {
 			responsive: false,
@@ -212,8 +255,8 @@ function generate(data) {
 	new window.Chart(document.getElementById('timestampChart2').getContext('2d'), {
 		type: 'line',
 		data: {
-			labels: labels['timestamps'],
-			datasets: datasets['timestamps']
+			labels: labels['timestamps'].slice(Math.max(0, labels['timestamps'].length - 10)),
+			datasets: datasets['timestamps'].map(dataset => Object.assign({}, dataset, { data: dataset.data.slice(current_day * 2 - 10) }))
 		},
 		options: {
 			responsive: false,
@@ -270,13 +313,13 @@ function generate(data) {
 					},
 					ticks: {
 						min: 0,
-						max: 240,
+						max: 1440,
 						callback: function (value, index, _values) {
-							return ['0', '30s', '1m', '5m', '10m', '30m', '1h', '4h'][index];
+							return ['0', '30s', '1m', '5m', '10m', '30m', '1h', '4h', '12h', '24h'][index];
 						}
 					},
 					afterBuildTicks: function (chartObj) {
-						chartObj.ticks = [0, 0.5, 1, 5, 10, 30, 60, 240];
+						chartObj.ticks = [0, 0.5, 1, 5, 10, 30, 60, 240, 720, 1440];
 					}
 				}],
 				xAxes: [{
@@ -287,11 +330,23 @@ function generate(data) {
 				}]
 			},
 			legend: {
-				position: 'right'
+				position: 'right',
+				onClick: function(e, legendItem) {
+					const index = legendItem.datasetIndex;
+					const ci = this.chart;
+
+					ci.data.datasets[index].showLine = !ci.data.datasets[index].showLine;
+					ci.update();
+				},
+				labels: {
+					filter: function(legendItem, _chartData) {
+						return legendItem.text !== 'median';
+					}
+				}
 			},
 			title: {
 				display: true,
-				text: 'Time Elapsed Between Parts 1 and 2'
+				text: 'Time Elapsed Between Parts 1 and 2 (+ median)'
 			}
 		}
 	});
@@ -337,7 +392,7 @@ function generate(data) {
 			datasets: datasets['stars']
 		},
 		options: {
-			responsive: false,
+			maintainAspectRatio: false,
 			scales: {
 				yAxes: [{
 					scaleLabel: {
@@ -362,6 +417,50 @@ function generate(data) {
 			title: {
 				display: true,
 				text: 'Stars Earned'
+			}
+		}
+	});
+
+	// Timestamp chart (all time)
+	new window.Chart(document.getElementById('timestampChart3').getContext('2d'), {
+		type: 'line',
+		data: {
+			labels: labels['timestamps'],
+			datasets: datasets['timestamps']
+		},
+		options: {
+			maintainAspectRatio: false,
+			scales: {
+				yAxes: [{
+					type: 'logarithmic',
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Time'
+					},
+					ticks: {
+						min: 0,
+						max: 10080,
+						callback: function (value, index, _values) {
+							return ['0', '5m', '10m', '30m', '1h', '4h', '12h', '1d', '2d', '7d'][index];
+						}
+					},
+					afterBuildTicks: function (chartObj) {
+						chartObj.ticks = [0, 5, 10, 30, 60, 240, 720, 1440, 2880, 10080];
+					}
+				}],
+				xAxes: [{
+					scaleLabel: {
+						display: 'true',
+						labelString: 'Day'
+					}
+				}]
+			},
+			legend: {
+				position: 'right'
+			},
+			title: {
+				display: true,
+				text: 'Solve Time (all time)'
 			}
 		}
 	});
