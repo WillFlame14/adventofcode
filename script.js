@@ -1,7 +1,6 @@
 'use strict';
 
-const start = 1606798800;			// Time when the first puzzle was released
-const current_day = Math.floor((Date.now() / 1000 - start) / 86400) + 1;		// The current day number
+let start, current_day;
 
 const colours = [
 	'rgba(255, 179, 0, 1)',
@@ -49,6 +48,13 @@ const anon_users = {
 };
 
 function generate(data) {
+	start = (Number(data.event) - 2020) * 86400 * 365 + 1606798800;			// Time when the first puzzle was released
+	if(data.event !== '2020') {
+		start -= 86400;		// Remove leap day in 2020
+	}
+	current_day = Math.min(Math.floor((Date.now() / 1000 - start) / 86400) + 1, 25);		// The current day number
+
+	console.log(Number(data.event));
 	// Global settings for all charts
 	window.Chart.defaults.global.defaultFontColor = 'black';
 	window.Chart.defaults.global.defaultFontFamily = 'Source Code Pro';
