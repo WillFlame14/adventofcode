@@ -10,11 +10,13 @@ function main() {
 
 	for(const line of lines) {
 		const parts = Number(line);
-
 		array.push(parts);
 	}
 
+	// For some reason JS can only sort arrays lexicographically
 	array.sort((a, b) => a - b);
+
+	// Add your device
 	array.push(array[array.length - 1] + 3);
 
 	// Part 1
@@ -29,27 +31,20 @@ function main() {
 
 	return diffs[1] * diffs[3]; */
 
+	// Part 2
+	// Go through all adapters and dp the next pluggable adapters
 	for(let i = 0; i < array.length - 1; i++) {
-		travel(i);
+		// Check whether any of the next 3 largest adapters are pluggable
+		for(let j = i + 1; j < array.length; j++) {
+			if(array[j] - array[i] <= 3) {
+				if(ways[j] === undefined) {
+					ways[j] = 0;
+				}
+				ways[j] += ways[i];
+			}
+		}
 	}
 	return ways[ways.length - 1];
-}
-
-function travel(index) {
-	const curr = array[index];
-
-	for(let i = 0; i < 3; i++) {
-		const new_index = index + i + 1;
-		if(new_index >= array.length) {
-			return;
-		}
-		if(array[new_index] - curr <= 3) {
-			if(ways[array[new_index]] === undefined) {
-				ways[array[new_index]] = 0;
-			}
-			ways[array[new_index]] += ways[curr];
-		}
-	}
 }
 
 console.log(main());
