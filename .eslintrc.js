@@ -24,7 +24,7 @@ module.exports = {
     "rules": {
         "eol-last": "error",
         "eqeqeq": ["error", "smart"],
-        "indent" : ["error", "tab", { "SwitchCase": 1}],
+        "indent" : "off",
         "max-len": ["warn", { "code": 200 }],
         "no-confusing-arrow": "error",
         "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
@@ -32,7 +32,7 @@ module.exports = {
         "no-shadow": "off",
         "@typescript-eslint/no-shadow": ["error"],
         "no-trailing-spaces": "error",
-        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "no-unused-expressions": "error",
         "no-useless-computed-key": "error",
