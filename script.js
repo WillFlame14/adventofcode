@@ -173,8 +173,14 @@ function generate(data) {
 				borderWidth: 2,
 			};
 
-			if(dataset === 'elapsed') {
-				series.showLine = false;
+			// Individual modifications
+			switch(dataset) {
+				case 'elapsed':
+					series.showLine = false;
+					break;
+				case 'points':
+				case 'stars':
+					series.pointBorderWidth = 1;
 			}
 
 			datasets[dataset].push(series);
