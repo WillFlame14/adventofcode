@@ -10,10 +10,15 @@
 	<main>
 		<div>
 			<form>
-				<label>Paste JSON in here to generate charts:</label>
+				<label>Paste JSON in here to generate leaderboard charts:</label>
 				<input id="jsonInput" autocomplete="off" type="text">
 				<button onclick="updateCharts(event)">Submit</button>
 				<div id="jsonParseError"></div>
+			</form>
+			<form>
+				<label>Paste input in here to draw carls:</label>
+				<input id="puzzleInput" autocomplete="off" type="text">
+				<button onclick="drawPuzzle(event)">Submit</button>
 			</form>
 		<div id="charts">
 			<canvas id="timestampChart1" width="900" height="550"></canvas>
@@ -27,7 +32,11 @@
 				<canvas id="timestampChart3"></canvas>
 			</div>
 		</div>
+		<div>
+			<canvas id="puzzleCanvas"></canvas>
+		</div>
 	</main>
 	<script src="script.js"></script>
+	<script src="blend_advent.js"></script>
 </body>
 </html>

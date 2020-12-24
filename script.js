@@ -25,7 +25,7 @@ const colours = [
 	'rgba(45, 14, 22, 1)'
 ];
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function updateCharts() {
 	event.preventDefault();
 
@@ -35,6 +35,7 @@ function updateCharts() {
 		generate(data);
 
 		document.getElementById('jsonParseError').style.display = 'none';
+		document.getElementById('charts').style.display = 'flex';
 	}
 	catch(err) {
 		document.getElementById('jsonParseError').style.display = 'block';
