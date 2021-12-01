@@ -81,10 +81,13 @@ function generate(data) {
 	const chart_ids = ['timestampChart1', 'timestampChart2', 'elapsedChart', 'pointsChart'];
 
 	// Resize charts if there are too many series
+	let chart_height = 500;
 	if (map.size > 15) {
-		for (const id of chart_ids) {
-			document.getElementById(id).height = 500 + 8 * map.size;
-		}
+		chart_height += 8 * map.size;
+	}
+
+	for (const id of chart_ids) {
+		document.getElementById(id).height = chart_height;
 	}
 
 	const num_users = Object.keys(data.members).length;
