@@ -78,6 +78,15 @@ function generate(data) {
 		}
 	});
 
+	const chart_ids = ['timestampChart1', 'timestampChart2', 'elapsedChart', 'pointsChart'];
+
+	// Resize charts if there are too many series
+	if (map.size > 15) {
+		for (const id of chart_ids) {
+			document.getElementById(id).height = 500 + 8 * map.size;
+		}
+	}
+
 	const num_users = Object.keys(data.members).length;
 	const median_elapsed = [];
 
@@ -236,7 +245,12 @@ function generate(data) {
 				}]
 			},
 			legend: {
-				position: 'right'
+				position: 'right',
+				labels: {
+					filter: function(legendItem, chartData) {
+						return chartData.datasets.some(dataset => dataset.label === legendItem.text && dataset.data.length > 0);
+					}
+				}
 			},
 			title: {
 				display: true,
@@ -280,7 +294,12 @@ function generate(data) {
 				}]
 			},
 			legend: {
-				position: 'right'
+				position: 'right',
+				labels: {
+					filter: function(legendItem, chartData) {
+						return chartData.datasets.some(dataset => dataset.label === legendItem.text && dataset.data.length > 0);
+					}
+				}
 			},
 			title: {
 				display: true,
