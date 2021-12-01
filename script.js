@@ -27,8 +27,9 @@ const anon_users = {
 };
 
 function generate(data) {
-	start = (Number(data.event) - 2020) * 86400 * 365 + 1606712400;			// Time when the first puzzle was released
-	if (Number(data.event) >= 2020) {
+	const year = Number(data.event);
+	start = (year - 2020) * 86400 * 365 + 1606712400;			// Time when the first puzzle was released
+	if (year >= 2020) {
 		start += 86400;		// Leap day in 2020
 	}
 	current_day = Math.min(Math.floor((Date.now() / 1000 - start) / 86400) + 1, 25);		// The current day number
@@ -78,16 +79,17 @@ function generate(data) {
 		}
 	});
 
-	const chart_ids = ['timestampChart1', 'timestampChart2', 'elapsedChart', 'pointsChart'];
-
 	// Resize charts if there are too many series
 	let chart_height = 500;
 	if (map.size > 15) {
 		chart_height += 8 * map.size;
 	}
 
-	for (const id of chart_ids) {
-		document.getElementById(id).height = chart_height;
+	for (const element of document.getElementsByClassName('chart')) {
+		element.height = chart_height;
+	}
+	for (const element of document.getElementsByClassName('full-width')) {
+		element.style.height = chart_height;
 	}
 
 	const num_users = Object.keys(data.members).length;
@@ -95,8 +97,8 @@ function generate(data) {
 
 	// Calculate scores
 	day_times.forEach((puzzle_times, puzzle_index) => {
-		// Ignore day 1
-		if(puzzle_index < 2) {
+		// Exclude day 1 of 2020
+		if(year === 2020 && puzzle_index < 2) {
 			return;
 		}
 
@@ -173,8 +175,13 @@ function generate(data) {
 					series.showLine = false;
 					break;
 				case 'points':
-				case 'stars':
 					series.pointBorderWidth = 1;
+					series.pointRadius = 2;
+					break;
+				case 'stars':
+				case 'timestamps':
+					series.pointBorderWidth = 1;
+					break;
 			}
 
 			datasets[dataset].push(series);
@@ -207,7 +214,8 @@ function generate(data) {
 		labels['elapsed'].push(`${i}`);
 		labels['stars'].push((start + (i * 86400)) * 1000);
 
-		if(i !== 1) {
+		// Exclude day 1 of 2020
+		if(!(year === 2020 && i === 1)) {
 			labels['points'].push(`${i}.1`);
 			labels['points'].push(`${i}.2`);
 		}
@@ -251,7 +259,12 @@ function generate(data) {
 				position: 'right',
 				labels: {
 					filter: function(legendItem, chartData) {
-						return chartData.datasets.some(dataset => dataset.label === legendItem.text && dataset.data.length > 0);
+						// Only include if chart contains visibly contains its data
+						return chartData.datasets.some(dataset => {
+							return dataset.label === legendItem.text
+								&& dataset.data.length > 0
+								&& dataset.data.some(value => Number(value) < 60 * 2);
+						});
 					}
 				}
 			},
@@ -300,7 +313,12 @@ function generate(data) {
 				position: 'right',
 				labels: {
 					filter: function(legendItem, chartData) {
-						return chartData.datasets.some(dataset => dataset.label === legendItem.text && dataset.data.length > 0);
+						// Only include if chart contains visibly contains its data
+						return chartData.datasets.some(dataset => {
+							return dataset.label === legendItem.text
+								&& dataset.data.length > 0
+								&& dataset.data.some(value => Number(value) < 60 * 24);
+						});
 					}
 				}
 			},
