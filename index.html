@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
 	<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	<script src="https://rawcdn.githack.com/google/palette.js/79a703df344e3b24380ce1a211a2df7f2d90ca22/palette.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.bundle.js"></script>
 </head>
 <body>
@@ -15,11 +16,11 @@
 				<button onclick="updateCharts(event)">Submit</button>
 				<div id="jsonParseError"></div>
 			</form>
-			<form>
+			<!-- <form>
 				<label>Paste input in here to draw carls:</label>
 				<input id="puzzleInput" autocomplete="off" type="text">
 				<button onclick="drawPuzzle(event)">Submit</button>
-			</form>
+			</form> -->
 		<div id="charts">
 			<canvas id="timestampChart1" width="900" height="550"></canvas>
 			<canvas id="timestampChart2" width="900" height="550"></canvas>

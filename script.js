@@ -2,29 +2,6 @@
 
 let start, current_day;
 
-const colours = [
-	'rgba(255, 179, 0, 1)',
-	'rgba(128, 62, 117, 1)',
-	'rgba(255, 104, 0, 1)',
-	'rgba(126, 149, 175, 1)',
-	'rgba(193, 10, 12, 1)',
-	'rgba(206, 162, 98, 1)',
-	'rgba(129, 112, 102, 1)',
-	'rgba(0, 125, 52, 1)',
-	'rgba(246, 118, 142, 1)',
-	'rgba(0, 83, 138, 1)',
-	'rgba(15, 42, 22, 1)',
-	'rgba(83, 55, 122, 1)',
-	'rgba(45, 92, 200, 1)',
-	'rgba(179, 40, 81, 1)',
-	'rgba(40, 200, 100, 1)',
-	'rgba(87, 24, 13, 1)',
-	'rgba(147, 170, 0, 1)',
-	'rgba(89, 51, 21, 1)',
-	'rgba(241, 58, 19, 1)',
-	'rgba(45, 14, 22, 1)'
-];
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function updateCharts() {
 	event.preventDefault();
@@ -45,17 +22,17 @@ function updateCharts() {
 }
 
 const anon_users = {
-	'991271': 'Tiger64guy'
+	'991271': 'Tiger64guy',
+	'1566620': 'Juandif'
 };
 
 function generate(data) {
-	start = (Number(data.event) - 2020) * 86400 * 365 + 1606798800;			// Time when the first puzzle was released
-	if(data.event !== '2020') {
-		start -= 86400;		// Remove leap day in 2020
+	start = (Number(data.event) - 2020) * 86400 * 365 + 1606712400;			// Time when the first puzzle was released
+	if (Number(data.event) >= 2020) {
+		start += 86400;		// Leap day in 2020
 	}
 	current_day = Math.min(Math.floor((Date.now() / 1000 - start) / 86400) + 1, 25);		// The current day number
 
-	console.log(Number(data.event));
 	// Global settings for all charts
 	window.Chart.defaults.global.defaultFontColor = 'black';
 	window.Chart.defaults.global.defaultFontFamily = 'Source Code Pro';
@@ -95,7 +72,10 @@ function generate(data) {
 			}
 		});
 
-		map.set(name, { id, timestamps, elapsed, points: [0], stars });
+		// Only include users that have solved at least one puzzle
+		if (stars.length > 1) {
+			map.set(name, { id, timestamps, elapsed, points: [0], stars });
+		}
 	});
 
 	const num_users = Object.keys(data.members).length;
@@ -144,6 +124,7 @@ function generate(data) {
 	});
 
 	const datasets = {};
+	const colours = window.palette('tol-rainbow', map.size).map((hex) => ('#' + hex)).reverse();
 
 	// For each member...
 	Array.from(map.keys()).forEach((member, index) => {
@@ -168,8 +149,8 @@ function generate(data) {
 				data: values,
 				lineTension: 0,
 				backgroundColor: ['rgba(0, 0, 0, 0)'],
-				borderColor: new Array(values.length).fill(colours[index]),
-				pointBackgroundColor: new Array(values.length).fill(colours[index]),
+				borderColor: colours[index],
+				pointBackgroundColor: colours[index],
 				pointBorderWidth: 3,
 				borderWidth: 2,
 			};
