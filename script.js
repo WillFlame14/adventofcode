@@ -226,7 +226,7 @@ function generate(data) {
 		type: 'line',
 		data: {
 			labels: labels['timestamps'].slice(Math.max(0, labels['timestamps'].length - 10)),
-			datasets: datasets['timestamps'].map(dataset => Object.assign({}, dataset, { data: dataset.data.slice(current_day * 2 - 10) }))
+			datasets: datasets['timestamps'].map(dataset => Object.assign({}, dataset, { data: dataset.data.slice(Math.max(0, current_day * 2 - 10)) }))
 		},
 		options: {
 			responsive: false,
@@ -280,7 +280,7 @@ function generate(data) {
 		type: 'line',
 		data: {
 			labels: labels['timestamps'].slice(Math.max(0, labels['timestamps'].length - 10)),
-			datasets: datasets['timestamps'].map(dataset => Object.assign({}, dataset, { data: dataset.data.slice(current_day * 2 - 10) }))
+			datasets: datasets['timestamps'].map(dataset => Object.assign({}, dataset, { data: dataset.data.slice(Math.max(0, current_day * 2 - 10)) }))
 		},
 		options: {
 			responsive: false,
