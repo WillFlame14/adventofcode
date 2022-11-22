@@ -1,2 +1,5 @@
 node_modules/
+*.hi
+*.o
+*.exe
 input.txt
