@@ -1,0 +1,22 @@
+{
+  "name": "adventofcode2019",
+  "version": "1.0.0",
+  "description": "Solutions for Advent of Code 2019",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WillFlame14/adventofcode2019.git"
+  },
+  "author": "WillFlame",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WillFlame14/adventofcode2019/issues"
+  },
+  "homepage": "https://github.com/WillFlame14/adventofcode2019#readme",
+  "devDependencies": {
+    "eslint": "^7.16.0"
+  }
+}
