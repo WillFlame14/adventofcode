@@ -1,0 +1,107 @@
+﻿{
+	"settings":
+	{
+		"version": 54, 
+		"artist": "", 
+		"song": "", 
+		"specialArtistType": "None", 
+		"artistPermission": "", 
+		"artistLinks": "", 
+		"author": "", 
+		"difficulty": "Medium", 
+		"seizureWarning": false, 
+		"previewImage": "", 
+		"syringeIcon": "", 
+		"previewSong": "", 
+		"previewSongStartTime": 0, 
+		"previewSongDuration": 10, 
+		"songNameHue": 0.581174, 
+		"songLabelGrayscale": false, 
+		"description": "", 
+		"tags": "", 
+		"separate2PLevelFilename": "", 
+		"canBePlayedOn": "OnePlayerOnly", 
+		"firstBeatBehavior": "RunNormally", 
+		"multiplayerAppearance": "HorizontalStrips", 
+		"levelVolume": 1, 
+		"rankMaxMistakes": [20, 15, 10, 5], 
+
+		"rankDescription":
+		[
+			"Better call 911, now!",
+			"Ugh, you can do better",
+			"Not bad I guess...",
+			"We make a good team!",
+			"You are really good!",
+			"Wow! That's awesome!!"
+		]
+	},
+	"rows":
+	[
+		{ "character": "Samurai", "rowType": "Classic", "row": 0, "rooms": [0], "player": "P1", "pulseSound": "Shaker", "pulseSoundVolume": 100, "pulseSoundPitch": 100, "pulseSoundPan": 0, "pulseSoundOffset": 0 },
+	],
+	"decorations":
+	[
+	],
+	"events":
+	[
+		{ "bar": 1, "beat": 1, "y": 0, "type": "SetBeatsPerMinute", "beatsPerMinute": 70 },
+		{ "bar": 1, "beat": 1, "y": 1, "type": "SetCrotchetsPerBar", "crotchetsPerBar": 1, "visualBeatMultiplier": 1 },
+		{ "bar": 1, "beat": 1, "y": 0, "type": "CallCustomMethod", "methodName": "i1=0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 1, "beat": 1, "y": 1, "type": "CallCustomMethod", "methodName": "i3 = 0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 1, "beat": 1, "y": 3, "type": "TagAction", "Action": "Disable", "Tag": "run_sol" },
+		{ "bar": 1, "beat": 1, "y": 2, "type": "CallCustomMethod", "methodName": "i4 = 0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 1, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 1, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 1, "beat": 1.125, "y": 2, "type": "CallCustomMethod", "methodName": "i5 = 0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 1, "beat": 1.125, "y": 0, "type": "CallCustomMethod", "methodName": "i2 = 0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 2, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 2, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 3, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 3, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 3, "beat": 1.125, "y": 5, "type": "FloatingText", "if": "1d0", "tag": "sol", "active": false, "rooms": [0], "id": 0, "text": "New input {i0}", "times": "", "textPosition": [50, 50], "size": 8, "angle": 0, "mode": "HideAbruptly", "showChildren": true, "color": "ffffff", "outlineColor": "000000ff", "anchor": "MiddleCenter", "fadeOutRate": 1, "narrate": true, "narrationCategory": "Notification" },
+		{ "bar": 3, "beat": 1.125, "y": 4, "type": "FloatingText", "if": "2d0", "tag": "sol", "active": false, "rooms": [0], "id": 1, "text": "Not new input :(", "times": "", "textPosition": [50, 50], "size": 8, "angle": 0, "mode": "HideAbruptly", "showChildren": true, "color": "ffffff", "outlineColor": "000000ff", "anchor": "MiddleCenter", "fadeOutRate": 1, "narrate": true, "narrationCategory": "Notification" },
+		{ "bar": 3, "beat": 1.125, "y": 0, "type": "CallCustomMethod", "if": "1d0", "tag": "sol", "methodName": "i2 = i2 + i0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 3, "beat": 1.125, "y": 1, "type": "CallCustomMethod", "if": "2&3d0", "tag": "sol", "methodName": "i3 = i2", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 3, "beat": 1.3125, "y": 1, "type": "CallCustomMethod", "if": "2d0", "tag": "sol", "methodName": "i2 = 0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 3, "beat": 1.375, "y": 0, "type": "CallCustomMethod", "tag": "sol", "methodName": "i1 = i0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 4, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 4, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 5, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 5, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 6, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 6, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 6, "beat": 1.0625, "y": 0, "type": "CallCustomMethod", "if": "1d0", "tag": "sol2", "methodName": "i2 = i2 + i0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.0625, "y": 1, "type": "CallCustomMethod", "if": "2&3&~4d0", "tag": "sol2", "methodName": "i3 = i2", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.0625, "y": 2, "type": "CallCustomMethod", "if": "2&4d0", "tag": "sol2", "methodName": "i3 = i4", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.125, "y": 4, "type": "FloatingText", "if": "3&~4&2d0", "tag": "sol2", "active": false, "rooms": [0], "id": 2, "text": "e1", "times": "", "textPosition": [50, 50], "size": 8, "angle": 0, "mode": "HideAbruptly", "showChildren": true, "color": "ffffff", "outlineColor": "000000ff", "anchor": "MiddleCenter", "fadeOutRate": 1, "narrate": true, "narrationCategory": "Notification" },
+		{ "bar": 6, "beat": 1.125, "y": 5, "type": "FloatingText", "if": "4&~5&2d0", "tag": "sol2", "active": false, "rooms": [0], "id": 3, "text": "e2", "times": "", "textPosition": [50, 50], "size": 8, "angle": 0, "mode": "HideAbruptly", "showChildren": true, "color": "ffffff", "outlineColor": "000000ff", "anchor": "MiddleCenter", "fadeOutRate": 1, "narrate": true, "narrationCategory": "Notification" },
+		{ "bar": 6, "beat": 1.125, "y": 6, "type": "FloatingText", "if": "5&2d0", "tag": "sol2", "active": false, "rooms": [0], "id": 4, "text": "e3", "times": "", "textPosition": [50, 50], "size": 8, "angle": 0, "mode": "HideAbruptly", "showChildren": true, "color": "ffffff", "outlineColor": "000000ff", "anchor": "MiddleCenter", "fadeOutRate": 1, "narrate": true, "narrationCategory": "Notification" },
+		{ "bar": 6, "beat": 1.125, "y": 3, "type": "CallCustomMethod", "if": "2&5d0", "tag": "sol2", "methodName": "i4 = i5", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.125, "y": 2, "type": "CallCustomMethod", "if": "2&4&~5d0", "tag": "sol2", "methodName": "i4 = i2", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.1875, "y": 3, "type": "CallCustomMethod", "if": "2&5d0", "tag": "sol2", "methodName": "i5 = i2", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.25, "y": 1, "type": "CallCustomMethod", "if": "2d0", "tag": "sol2", "methodName": "i2 = 0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 6, "beat": 1.3125, "y": 0, "type": "CallCustomMethod", "tag": "sol2", "methodName": "i1 = i0", "executionTime": "OnBar", "sortOffset": 0 },
+		{ "bar": 7, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 7, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 8, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 8, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 9, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 9, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 10, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol", "Action": "Run", "Tag": "sol" },
+		{ "bar": 10, "beat": 1, "y": 7, "type": "TagAction", "tag": "run_sol2", "Action": "Run", "Tag": "sol2" },
+		{ "bar": 11, "beat": 1, "y": 1, "type": "SetBeatsPerMinute", "beatsPerMinute": 1000 },
+		{ "bar": 11, "beat": 1, "y": 0, "type": "SetCrotchetsPerBar", "crotchetsPerBar": 50, "visualBeatMultiplier": 1 },
+	],
+	"conditionals":
+	[
+		{ "id": 1, "type": "Custom", "tag": "1", "name": "new input", "expression": "i1 != i0"},
+		{ "id": 2, "type": "Custom", "tag": "2", "name": "not new input", "expression": "i1 == i0"},
+		{ "id": 3, "type": "Custom", "tag": "3", "name": "sum > i3", "expression": "i2 > i3"},
+		{ "id": 4, "type": "Custom", "tag": "4", "name": "sum > i4", "expression": "i2 > i4"},
+		{ "id": 5, "type": "Custom", "tag": "5", "name": "sum > i5", "expression": "i2 > i5"},
+	],
+	"bookmarks":
+	[
+	]
+}
