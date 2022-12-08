@@ -1,6 +1,7 @@
 import Data.List
 
 -- A directory item can either be a File (leaf) or a Directory (nested structure).
+-- It took me embarassingly long to figure out what data type I needed to use.
 data DirectoryItem = File { name::String, size::Int } | Directory { name::String, contents::[DirectoryItem] } deriving (Show)
 
 -- First, generate the entire directory structure.
