@@ -1,8 +1,16 @@
 module Utils (
-	chunked,
-	wordsWhen,
-	at
+    Point,
+    Point3,
+    chunked,
+    wordsWhen,
+    at,
+    pointAdd,
+    point3Add,
+    point3Mult
 ) where
+
+type Point = (Int, Int)
+type Point3 = (Int, Int, Int)
 
 -- Splits an array into chunks of the given size (the last array may be slightly smaller).
 chunked :: [a] -> Int -> [[a]]
@@ -17,5 +25,14 @@ wordsWhen func xs =
     let (a, b) = span func xs
     in a:(wordsWhen func $ if null b then [] else tail b)
 
-at :: [[a]] -> (Int, Int) -> a
-at grid (v, h) = (grid !! v) !! h
+at :: [[a]] -> Point -> a
+at grid (x, y) = (grid !! y) !! x
+
+pointAdd :: Point -> Point -> Point
+pointAdd (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+
+point3Add :: Point3 -> Point3 -> Point3
+point3Add (x1, y1, z1) (x2, y2, z2) = (x1 + x2, y1 + y2, z1 + z2)
+
+point3Mult :: Point3 -> Int -> Point3
+point3Mult (x, y, z) a = (a * x, a * y, a * z)

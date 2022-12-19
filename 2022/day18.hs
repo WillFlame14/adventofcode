@@ -18,7 +18,7 @@ sol input =
         point_set = Set.fromList point_list
         start = parse $ head contents
         pocket_heads = nub . concat $ map (possiblePockets point_set) point_list
-        pockets = Set.toList . Set.union . map snd .  filter (\(b, _) -> b) $ map (findPocket point_set Set.empty) pocket_heads
+        pockets = Set.toList . foldr1 Set.union . map snd .  filter (\(b, _) -> b) $ map (findPocket point_set Set.empty) pocket_heads
         part1_ans = surfaceArea point_list
         in show (part1_ans, part1_ans - surfaceArea pockets)
 
@@ -48,7 +48,7 @@ findPocket point_set visited p@(x, y, z) =
 possiblePockets :: Set.Set Point3 -> Point3 -> [Point3]
 possiblePockets point_set p@(x, y, z) =
     let spaces = filter (not . flip Set.member point_set) $ findAdjacent p
-        in filter spaces -- (\p' -> possiblePocket point_set p (p' `point3Add` (p `point3Mult` (-1)))) spaces
+        in spaces -- filter spaces (\p' -> possiblePocket point_set p (p' `point3Add` (p `point3Mult` (-1)))) spaces
 
 possiblePocket :: Set.Set Point3 -> Point3 -> Point3 -> Bool
 possiblePocket point_set point dir = any (flip Set.member point_set) . take 22 . drop 1 $ iterate (point3Add dir) point
