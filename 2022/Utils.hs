@@ -6,8 +6,11 @@ module Utils (
     at,
     pointAdd,
     point3Add,
-    point3Mult
+    point3Mult,
+    findInGrid
 ) where
+
+import Data.List
 
 type Point = (Int, Int)
 type Point3 = (Int, Int, Int)
@@ -36,3 +39,6 @@ point3Add (x1, y1, z1) (x2, y2, z2) = (x1 + x2, y1 + y2, z1 + z2)
 
 point3Mult :: Point3 -> Int -> Point3
 point3Mult (x, y, z) a = (a * x, a * y, a * z)
+
+findInGrid :: (Char -> Bool) -> [String] -> [Point]
+findInGrid f grid = concat . map (\(i, row) -> map (\col -> (col, i)) $ findIndices f row) $ zip [0..] grid
