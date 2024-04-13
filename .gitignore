@@ -2,4 +2,5 @@ node_modules/
 *.hi
 *.o
 *.exe
+target/
 input.txt
