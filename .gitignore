@@ -3,4 +3,7 @@ node_modules/
 *.o
 *.exe
 target/
+.bsp
+.metals
+.scala-build
 input.txt
