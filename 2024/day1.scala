@@ -1,7 +1,7 @@
 import scala.io.Source._
 
 @main
-def day8() =
+def day1() =
 	val input = fromFile("input.txt").getLines()
 
 	val pattern = """(\d+) *(\d+)""".r
