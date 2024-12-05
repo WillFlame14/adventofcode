@@ -29,9 +29,12 @@ const anon_users = {
 function generate(data) {
 	const year = Number(data.event);
 	start = (year - 2020) * 86400 * 365 + 1606712400;			// Time when the first puzzle was released
-	if (year >= 2020) {
-		start += 86400;		// Leap day in 2020
+
+	for (let i = 2020; i <= year; i++) {
+		if (i % 4 === 0 && (i % 100 !== 0 || i % 400 === 0))
+			start += 86400;		// Leap day
 	}
+
 	current_day = Math.min(Math.floor((Date.now() / 1000 - start) / 86400) + 1, 25);		// The current day number
 
 	// Global settings for all charts
