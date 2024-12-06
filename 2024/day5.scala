@@ -10,7 +10,7 @@ def validUpdate(pages: List[Int], rules: List[(Int, Int)]) =
 @main
 def day5() =
 	val input = fromFile("input.txt").getLines().toList
-	val (rules_r, pages_r) = input.splitAt(input.indexOf(""))
+	val (rules_r, pages_r) = input.span(_ == "")
 
 	val rules = rules_r.foldRight(Nil)((c, a) =>
 		val xs = c.split("\\|").map(_.toInt)
