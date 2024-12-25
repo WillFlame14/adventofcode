@@ -25,11 +25,11 @@ def expand(grid: Grid) =
 		case '#' => List('#', '#')
 	))
 
-def update(grid: Grid, p: Point[Int], move: Char) =
+def update(grid: Grid, p: Pair[Int], move: Char) =
 	val dir = dirMap(move)
 	val horiz = move == '<' || move == '>'
 
-	def movable(curr: Point[Int]): Boolean =
+	def movable(curr: Pair[Int]): Boolean =
 		gridAt(grid, curr) match
 			case '#' => false
 			case '.' => true
@@ -40,7 +40,7 @@ def update(grid: Grid, p: Point[Int], move: Char) =
 				(if horiz then true else movable(curr + dir + (-1, 0)))
 
 	if movable(p + dir) then
-		def updateGrid(curr: Point[Int], newGrid: Grid, item: Char): Grid =
+		def updateGrid(curr: Pair[Int], newGrid: Grid, item: Char): Grid =
 			val next = curr + dir
 			val nextGrid = updateAt(newGrid, next, item)
 			gridAt(newGrid, next) match
@@ -60,7 +60,7 @@ def update(grid: Grid, p: Point[Int], move: Char) =
 			(grid, p + dir)
 	else (grid, p)
 
-def displayGrid(grid: Grid, p: Point[Int]) =
+def displayGrid(grid: Grid, p: Pair[Int]) =
 	println(updateAt(grid, p, '@').map(_.mkString + "\n").mkString)
 
 def gpsScore(grid: Grid) =

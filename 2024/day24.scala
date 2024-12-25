@@ -1,4 +1,4 @@
-package day23
+package day24
 
 import scala.io.Source._
 import aoc._

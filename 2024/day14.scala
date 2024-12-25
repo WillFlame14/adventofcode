@@ -3,7 +3,7 @@ import aoc._
 
 val DIMS = (101, 103)
 
-case class Robot(pos: Point[Int], vel: Point[Int]):
+case class Robot(pos: Pair[Int], vel: Pair[Int]):
 	def update() =
 		val (x, y) = pos + vel
 		this.copy(pos = ((x + DIMS._1) % DIMS._1, (y + DIMS._2) % DIMS._2))
@@ -14,7 +14,7 @@ def parseRobot(s: String) =
 	s match
 		case robotPattern(px, py, vx, vy) => Robot((px.toInt, py.toInt), (vx.toInt, vy.toInt))
 
-def quadrant(p: Point[Int]): Option[Int] =
+def quadrant(p: Pair[Int]): Option[Int] =
 	p match
 		case (x, y) if x < DIMS._1 / 2 =>
 			if y < DIMS._2 / 2 then Some(2) else if y > DIMS._2 / 2 then Some(3) else None

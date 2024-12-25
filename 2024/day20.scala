@@ -37,7 +37,7 @@ def cheat2(grid: Grid, shortestPath: List[Pair[Int]]) =
 	val pathMap = shortestPath.zipWithIndex.toMap
 	val dims = (grid(0).length, grid.length)
 
-	def findCheats(start: Pair[Int], frontier: List[(Pair[Int], Int)], visited: Set[Pair[Int]], cheats: Int = 0): Int =
+	@tailrec def findCheats(start: Pair[Int], frontier: List[(Pair[Int], Int)], visited: Set[Pair[Int]], cheats: Int = 0): Int =
 		if frontier.isEmpty then cheats else
 			val (curr, i) = frontier.head
 			val validNeighbours = neighbours(dims, curr).filter(p => !visited.contains(p))

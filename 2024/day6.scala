@@ -1,3 +1,4 @@
+package day6
 import scala.io.Source._
 
 type Pair = Tuple2[Int, Int]

@@ -51,11 +51,9 @@ lazy val getPathMemo: ((Char, Char, Int)) => Long = memoize(x =>
 	val (start, finish, i) = x
 	val currPaths = traverseDirpad(start, finish)
 
-	if i == 0 then
-		if currPaths.isEmpty then 1 else currPaths.map(_.length).min
-	else
-		if currPaths.isEmpty then
-			getPathMemo(('A', 'A', i - 1))
+	if currPaths.isEmpty then 1 else
+		if i == 0 then
+			currPaths.map(_.length).min
 		else
 			currPaths.map(currPath =>
 				currPath.zipWithIndex.foldLeft(0L)((a, c) =>
@@ -71,8 +69,8 @@ def filterShortest[A](xs: List[List[A]]) =
 def press(str: String, robots: Int) =
 	val r1Paths = filterShortest(getPaths(str.toList, traverseNumpad))
 
-	val paths = (0 until robots).foldRight(r1Paths)((c, a) =>
-		filterShortest(a.flatMap(path => getPaths(path, (s, f) => traverseDirpad(s, f)))))
+	val paths = (0 until robots).foldRight(r1Paths)((_, a) =>
+		filterShortest(a.flatMap(path => getPaths(path, traverseDirpad))))
 
 	paths(0).length
 
@@ -86,7 +84,7 @@ def press2(str: String, robots: Int) =
 	).min
 
 @main
-def day20() =
+def day21() =
 	val input = fromFile("input.txt").getLines().toList
 
 	val part1 = input.foldRight(0)((c, a) => a + press(c, 2) * c.init.toInt)

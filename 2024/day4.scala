@@ -1,3 +1,5 @@
+package day4
+
 import scala.io.Source._
 import scala.annotation.tailrec
 

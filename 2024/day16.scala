@@ -6,7 +6,7 @@ import scala.annotation.tailrec
 
 def dirs = List((0, -1), (1, 0), (0, 1), (-1, 0))
 
-type MMap = Map[(Point[Int], Point[Int]), (Int, Set[Point[Int]])]
+type MMap = Map[(Pair[Int], Pair[Int]), (Int, Set[Pair[Int]])]
 
 def parse(s: List[String]) =
 	val grid = s.map(_.toCharArray.toList)
@@ -23,7 +23,7 @@ def parse(s: List[String]) =
 
 	(updateAt(updateAt(grid, start, '.'), finish, '.'), start, finish)
 
-@tailrec def dp(grid: Grid[Char], frontier: MMap, best: MMap, target: Point[Int]): MMap =
+@tailrec def dp(grid: Grid[Char], frontier: MMap, best: MMap, target: Pair[Int]): MMap =
 	if frontier.size == 0 then best else
 		val dims = (grid(0).length, grid.length)
 
@@ -32,7 +32,7 @@ def parse(s: List[String]) =
 			val ((point, dir), (score, visited)) = c
 			val dirI = dirs.indexOf(dir)
 
-			val validNeighbours: List[((Point[Int], Point[Int]), (Int, Set[Point[Int]]))] = List(
+			val validNeighbours: List[((Pair[Int], Pair[Int]), (Int, Set[Pair[Int]]))] = List(
 				((point + dir, dir), (score + 1, visited + point)),
 				((point, dirs((dirI + 1) % dirs.length)), (score + 1000, visited)),
 				((point, dirs((dirI - 1 + dirs.length) % dirs.length)), (score + 1000, visited)))

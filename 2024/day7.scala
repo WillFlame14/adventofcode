@@ -1,3 +1,4 @@
+package day7
 import scala.io.Source._
 
 def solve(target: Long, acc: Long, nums: List[Long], concat: Boolean = false): Boolean =

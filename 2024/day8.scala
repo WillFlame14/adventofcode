@@ -1,3 +1,4 @@
+package day8
 import scala.io.Source._
 
 type Pair = Tuple2[Int, Int]
@@ -6,10 +7,7 @@ extension (p: Pair)
 	def +(p2: Pair) =
 		(p._1 + p2._1, p._2 + p2._2)
 
-	def *(i: Int) =
-		(p._1 * i, p._2 * i)
-
-	def diff(p2: Pair) =
+	def -(p2: Pair) =
 		(p._1 - p2._1, p._2 - p2._2)
 
 	def inBounds(dims: (Int, Int)) =
@@ -30,14 +28,14 @@ def findAntinodes(dims: (Int, Int), antennas: List[Pair]) =
 	for
 		p1 <- antennas
 		p2 <- antennas if p1 != p2
-		poss <- List(p2 + p2.diff(p1)) if poss.inBounds(dims)
+		poss <- List(p2 + p2 - p1) if poss.inBounds(dims)
 	yield poss
 
 def findAntinodes2(dims: (Int, Int), antennas: List[Pair]) =
 	for
 		x <- (0 until dims._1)
 		y <- (0 until dims._2) if antennas.exists(p1 => antennas.exists(p2 =>
-			p2 != p1 && p1.diff(x, y).collinear(p2.diff(x, y))))
+			p2 != p1 && (p1 - (x, y)).collinear(p2 - (x, y))))
 	yield (x, y)
 
 @main
@@ -62,8 +60,8 @@ def day8() =
 	println((part1, part2))
 
 	// val map = for
-	// 	x <- 0 until dims._1
-	// 	y <- 0 until dims._2 + 1
+	//	 x <- 0 until dims._1
+	//	 y <- 0 until dims._2 + 1
 	// yield if y == dims._2 then '\n' else if antinodes.contains((y, x)) then '#' else '.'
 
 	// println(map.mkString)

@@ -41,7 +41,10 @@ def testProgram(comp: Computer, program: List[Int], target: Int): Boolean =
 
 def findMatch(program: List[Int], target: List[Int], acc: Long = 0L): List[Long] =
 	if target == Nil then List(acc) else
-		val poss = (0 until 8).toIterator.map(_ + acc * 8).filter(a => testProgram(Computer(a, 0, 0), program, target.head))
+		val poss = (0 until 8)
+			.map(_ + acc * 8)
+			.filter(a =>
+				testProgram(Computer(a, 0, 0), program, target.head))
 		poss.flatMap(x => findMatch(program, target.tail, x)).toList
 
 @main
