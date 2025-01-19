@@ -24,9 +24,16 @@ extension[A: Numeric] (p: Pair[A])
 
 type Grid[A] = List[List[A]]
 
+def gridToString[A](grid: Grid[A]) =
+	grid.map(_.mkString).mkString("\n")
+
 def gridAt[A,B <: Int](grid: Grid[A], p: Pair[B]) =
 	val (x, y) = p
 	grid(y.toInt)(x.toInt)
+
+def gridAtOpt[A,B <: Int](grid: Grid[A], p: Pair[B]) =
+	val (x, y) = p
+	grid.lift(y.toInt).flatMap(_.lift(x.toInt))
 
 def updateAt[A,B <: Int](grid: Grid[A], p: Pair[B], v: A) =
 	val (x, y) = p
