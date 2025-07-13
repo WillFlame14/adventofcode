@@ -1,3 +1,4 @@
+package day10
 import scala.io.Source._
 
 enum Dest:
