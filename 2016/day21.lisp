@@ -1,0 +1,67 @@
+(defun rotate-left (l n)
+  (append (nthcdr n l) (butlast l (- (length l) n))))
+
+(defun rotate-right (l n)
+  (let ((rotations (- (length l) n)))
+    (rotate-left l (if (< rotations 0) (+ rotations (length l)) rotations))))
+
+(defun remove-index (l n)
+  (if (= n 0) (cdr l) (cons (first l) (remove-index (cdr l) (1- n)))))
+
+(defun insert-index (l n item)
+  (if (= n 0) (cons item l) (cons (first l) (insert-index (cdr l) (1- n) item))))
+
+(defun scramble (pwd op)
+  (let* ((parts (uiop:split-string op :separator " "))
+         (cmd (first parts)))
+    (cond ((equal cmd "swap")
+           (if (equal (second parts) "position")
+               (let ((x (parse-integer (third parts)))
+                     (y (parse-integer (sixth parts))))
+                 (rotatef (nth x pwd) (nth y pwd))
+                 pwd)
+               (let ((ix (position (char (third parts) 0) pwd))
+                     (iy (position (char (sixth parts) 0) pwd)))
+                 (rotatef (nth ix pwd) (nth iy pwd))
+                 pwd)))
+          ((equal cmd "rotate")
+           (cond ((equal (second parts) "based")
+                  (let* ((index (position (char (seventh parts) 0) pwd))
+                         (rotations (+ index (if (> index 3) 2 1))))
+                    (rotate-right pwd rotations)))
+                 ((equal (second parts) "left")
+                  (rotate-left pwd (parse-integer (third parts))))
+                 (t (rotate-right pwd (parse-integer (third parts))))))
+          ((equal cmd "reverse")
+           (let ((x (parse-integer (third parts)))
+                 (y (parse-integer (fifth parts))))
+             (append (subseq pwd 0 x) (reverse (subseq pwd x (1+ y))) (subseq pwd (1+ y)))))
+          ((equal cmd "move")
+           (let* ((x (parse-integer (third parts)))
+                 (x-item (nth x pwd))
+                 (y (parse-integer (sixth parts))))
+             (insert-index (remove-index pwd x) y x-item))))))
+
+(defun gen-combinations (l)
+  (if (= (length l) 1)
+      (list l)
+      (apply 'concatenate 'list (loop for item in l
+                                      collect (loop for nested-item in (gen-combinations (remove item l))
+                                                    collect (cons item (copy-list nested-item)))))))
+
+(defun scramble-pwd (pwd lines)
+  ;; (format t "~a~%" pwd)
+  (loop for op in lines
+        for p = (scramble pwd op) then (scramble p op)
+        ;; do (format t "~a ~a~%" p op)
+        finally (return (format nil "~{~a~}" p))))
+
+(let* ((lines (uiop:read-file-lines "input.txt"))
+       (pwd (coerce "abcdefgh" 'list))
+       (combs (gen-combinations pwd)))
+  ; Part 1
+  (format t "~a~%" (scramble-pwd pwd lines))
+  ; Part 2
+  (loop for c in combs
+        when (equal (scramble-pwd (copy-list c) lines) "fbgdceah")
+          return (format t "~{~a~}~%" c)))
