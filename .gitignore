@@ -2,6 +2,8 @@ node_modules/
 *.hi
 *.o
 *.exe
+*.fasl
+*.lisp~
 target/
 .bsp
 .metals
