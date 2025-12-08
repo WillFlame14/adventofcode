@@ -1,6 +1,7 @@
 (defpackage :util
   (:use :cl)
-  (:export #:str-to-keyword
+  (:export #:parse-ints
+           #:str-to-keyword
            #:rotate-left
            #:rotate-right
            #:remove-index
@@ -12,6 +13,9 @@
            ))
 
 (in-package :util)
+
+(defun parse-ints (s)
+  (mapcar #'parse-integer (ppcre:all-matches-as-strings "\\d+" s)))
 
 (defun str-to-keyword (s)
   (intern (string-upcase s) :keyword))
