@@ -11,7 +11,10 @@
            #:copy-arr
            #:adj
            #:inbounds
-           ))
+           #:when-let
+           #:if-let
+           #:multf
+           #:divf))
 
 (in-package :util)
 
@@ -80,3 +83,18 @@
 (defun print-hash-table (table)
   (with-output-to-string (s)
     (maphash (lambda (k v) (format s "~a: ~a, " k v)) table)))
+
+(defmacro when-let ((var expr) &body body)
+  `(let ((,var ,expr))
+     (when ,var
+       ,@body)))
+
+(defmacro if-let ((var expr) then else)
+  `(let ((,var ,expr))
+     (if ,var ,then ,else)))
+
+(defmacro multf (place val)
+  `(setf ,place (* ,place ,val)))
+
+(defmacro divf (place val)
+  `(setf ,place (/ ,place ,val)))
