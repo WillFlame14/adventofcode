@@ -1,0 +1,42 @@
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (ql:quickload "cl-ppcre" :silent t)
+  (ql:quickload "cl-heap" :silent t)
+  (ql:quickload "cl-containers" :silent t)
+  (load "util.lisp"))
+
+(defun parse-line (s)
+  (let* ((parts (uiop:split-string s)))
+    (list (util:str-to-keyword (subseq (first parts) 0 3))
+          (mapcar #'util:str-to-keyword (rest parts)))))
+
+(defun build-adj (conns)
+  (let ((table (make-hash-table)))
+    (loop for (src dests) in conns
+          do (setf (gethash src table) dests))
+    table))
+
+(defun all-paths (curr goal adj &optional (exclude nil) (cache (make-hash-table)))
+  (or (gethash curr cache)
+      (if (eql curr goal) 1
+          (loop for n in (remove exclude (gethash curr adj))
+                for paths = (all-paths n goal adj exclude cache)
+                do (setf (gethash n cache) paths)
+                sum paths))))
+
+(defun part-1 ()
+  (let* ((input (uiop:read-file-lines "input.txt"))
+         (adj (build-adj (mapcar #'parse-line input)))
+         (frontier (list :you)))
+    (all-paths :you :out adj frontier)))
+
+(defun part-2 ()
+  (let* ((input (uiop:read-file-lines "input.txt"))
+         (adj (build-adj (mapcar #'parse-line input)))
+         (svr-to-fft (all-paths :svr :fft adj :dac))
+         (svr-to-dac (all-paths :svr :dac adj :fft))
+         (fft-to-dac (all-paths :fft :dac adj))
+         (dac-to-fft (all-paths :dac :fft adj))
+         (dac-to-out (all-paths :dac :out adj :fft))
+         (fft-to-out (all-paths :fft :out adj :dac)))
+    (+ (* svr-to-fft fft-to-dac dac-to-out)
+       (* svr-to-dac dac-to-fft fft-to-out))))

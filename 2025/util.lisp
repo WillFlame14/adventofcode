@@ -1,6 +1,7 @@
 (defpackage :util
   (:use :cl)
   (:export #:parse-ints
+           #:transpose
            #:str-to-keyword
            #:rotate-left
            #:rotate-right
@@ -16,6 +17,9 @@
 
 (defun parse-ints (s)
   (mapcar #'parse-integer (ppcre:all-matches-as-strings "\\d+" s)))
+
+(defun transpose (m)
+  (apply #'mapcar #'list m))
 
 (defun str-to-keyword (s)
   (intern (string-upcase s) :keyword))
@@ -40,12 +44,12 @@
             nconcing (loop for nested-item in (gen-permutations (remove item l))
                           collect (cons item (copy-list nested-item))))))
 
-(defun copy-arr (node-arr)
-  (let* ((dims (array-dimensions node-arr))
+(defun copy-arr (arr)
+  (let* ((dims (array-dimensions arr))
          (new-arr (make-array dims)))
     (loop for y from 0 below (first dims)
           do (loop for x from 0 below (second dims)
-                   do (setf (aref new-arr y x) (copy-list (aref node-arr y x)))))
+                   do (setf (aref new-arr y x) (aref arr y x))))
     new-arr))
 
 (defparameter adj '((-1 0) (1 0) (0 1) (0 -1)))
@@ -53,3 +57,26 @@
 (defun inbounds (x y dims)
   (and (>= x 0) (< x (second dims))
        (>= y 0) (< y (first dims))))
+
+(defun prime-factorize (x &optional (acc nil) (last-prime 2))
+  (let ((factor (loop for i from last-prime below x
+                      if (zerop (mod x i))
+                        return i)))
+    (if factor
+        (prime-factorize (/ x factor) (cons factor acc) factor)
+        (cons x acc))))
+
+(defun frequencies (l)
+  (let ((table (make-hash-table :test #'equal)))
+    (loop for e in l
+          do (setf (gethash e table) (1+ (or (gethash e table) 0)))
+          finally (return table))))
+
+(defun list-to-2d-array (list)
+  (make-array (list (length list)
+                    (length (first list)))
+              :initial-contents list))
+
+(defun print-hash-table (table)
+  (with-output-to-string (s)
+    (maphash (lambda (k v) (format s "~a: ~a, " k v)) table)))
