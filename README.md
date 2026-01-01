@@ -10,3 +10,4 @@ My solutions for [Advent of Code](https://adventofcode.com/) over various years.
 - 2022 (Haskell)
 - 2023 (Clojure)
 - 2024 (Scala)
+- 2025 (Common Lisp)
